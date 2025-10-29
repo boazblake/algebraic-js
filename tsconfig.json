@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "effects-vdom"
+  },
+  "include": [
+    "src","src/global.d.ts"
+  ]
+}

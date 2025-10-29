@@ -1,0 +1,21 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "globals": {
+    "window": "readonly",
+    "document": "readonly",
+    "console": "readonly"
+  },
+  "rules": {
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "no-console": "warn",
+    "no-debugger": "error",
+    "eqeqeq": ["error", "always"],
+    "prefer-const": "warn",
+    "no-var": "error"
+  },
+  "ignorePatterns": ["dist/", "node_modules/"]
+}

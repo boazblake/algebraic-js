@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "effects-vdom",
+    "baseUrl": "./src",
+    "outDir": "dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

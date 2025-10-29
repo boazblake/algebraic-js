@@ -1,0 +1,27 @@
+{
+  "name": "effects-vdom",
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "esbuild src/index.ts --bundle --servedir=public --outfile=public/app.js --sourcemap",
+    "serve": "serve public",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,json,md}'"
+  },
+  "devDependencies": {
+    "@types/mithril": "^2.2.7",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "esbuild": "^0.21.4",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "mithril": "^2.3.7"
+  }
+}
