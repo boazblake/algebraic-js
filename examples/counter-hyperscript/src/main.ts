@@ -1,4 +1,4 @@
-import { renderApp } from "effects-vdom";
+import { renderApp ,IO} from "effects-vdom";
 import {renderer} from './renderer'
 import type { Program } from "effects-vdom";
 import { init } from "./init";
@@ -13,8 +13,8 @@ export const program: Program<Model, Msg> = {
   view,
 };
 
-const root = document.getElementById("app")!;
+const root = IO(() => document.getElementById("app"))
 
-const app = renderApp(renderer)(root, program);
+const app = renderApp(renderer)(root, program).run();
 registerGlobalIO(app.dispatch).forEach(io => io.run())
 

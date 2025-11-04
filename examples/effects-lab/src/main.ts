@@ -3,8 +3,8 @@ import { renderer } from "./renderer";
 import { program } from "./program";
 import { registerGlobalIO } from "./utils/globalIO";
 
-const root = document.getElementById("app")!;
-export const app = renderApp(renderer)(root, program);
+const root = IO(()=>document.getElementById("app"));
+export const app = renderApp(renderer)(root, program).run();
 
 
 const resizeEffect = registerGlobalIO(app.dispatch);

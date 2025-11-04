@@ -1,6 +1,5 @@
-// IMPORTANT: import ADTs directly to avoid cycles with index.ts
-import { Reader } from "../adt/reader";
-import { IO }     from "../adt/io";
+import { Reader } from "../adt/reader.js";
+import { IO }     from "../adt/io.js";
 
 export type DomEnv = {
   document: Document;

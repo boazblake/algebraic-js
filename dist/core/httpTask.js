@@ -1,4 +1,4 @@
-import { Reader, Task, Either } from "../adt/index";
+import { Reader, Task, Either } from "../adt/index.js";
 /**
  * HTTP Reader–Task abstraction using Either for errors.
  */

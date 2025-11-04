@@ -1,0 +1,35 @@
+{
+  "name": "effects-vdom-kitchen-sink",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p . && npm run build:browser",
+    "build:browser": "npx esbuild src/browser/main.ts --bundle --platform=browser --format=esm --outfile=dist/browser/main.js",
+    "serve": "node dist/server/index.js",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "prettier --write .",
+    "check": "npm run lint && npm run format"
+  },
+  "dependencies": {
+    "effects-vdom": "file:../..",
+    "express": "^5.1.0",
+    "hyperscript": "^2.0.2",
+    "hyperscript-helpers": "^3.0.3",
+    "jsdom": "^27.0.1",
+    "nanomorph": "^5.4.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/hyperscript": "^0.0.7",
+    "@types/jsdom": "^27.0.0",
+    "@types/superfine": "^7.0.5",
+    "esbuild": "^0.21.4",
+    "oxlint": "^1.16.0",
+    "prettier": "^3.6.2",
+    "serve": "^14.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1"
+  }
+}

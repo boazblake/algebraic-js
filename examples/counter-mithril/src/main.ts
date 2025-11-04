@@ -13,9 +13,9 @@ export const program: Program<Model, Msg> = {
   view,
 };
 
-const renderer = (root: Element, vnode: any) => m.render(root, vnode);
-const root = document.getElementById("app")!;
+const renderer = (root: Element, vnode: any) => m.render(root.run(), vnode);
+const root = IO(() =>document.getElementById("app") )!;
 
-const app = renderApp(renderer)(root, program);
+const app = renderApp(renderer)(root, program).run();
 registerGlobalIO(app.dispatch).forEach(io => io.run())
 

@@ -1,2 +1,2 @@
-export * from './adt';
-export * from './core';
+export * from './adt/index.js';
+export * from './core/index.js';

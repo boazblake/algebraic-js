@@ -1,4 +1,4 @@
-import { Reader, Task, Either } from "../adt/index";
+import { Reader, Task, Either } from "../adt/index.js";
 
 export type HttpEnv = {
   fetch: typeof fetch;

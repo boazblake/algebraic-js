@@ -1,4 +1,4 @@
-import { Reader, Task } from "../adt/index";
+import { Reader, Task } from "../adt/index.js";
 export type HttpEnv = {
     fetch: typeof fetch;
     baseUrl?: string;

@@ -1,8 +1,9 @@
-export const renderApp = (renderer) => (root, program) => {
+import { IO } from "../adt/io.js";
+export const renderApp = (renderer) => (rootIO, program) => rootIO.map((root) => {
     let model;
     const queue = [];
     let queued = false;
-    const runEffects = (fx) => fx?.forEach(e => e.run());
+    const runEffects = (fx) => fx?.forEach((e) => e.run());
     const step = (msg) => {
         const { model: next, effects } = program.update(msg, model, dispatch);
         model = next;
@@ -27,6 +28,8 @@ export const renderApp = (renderer) => (root, program) => {
         renderer(root, program.view(model, dispatch));
         runEffects(effects);
     };
-    start();
-    return { dispatch };
-};
+    return IO(() => {
+        start();
+        return { dispatch };
+    });
+}).chain((io) => io);

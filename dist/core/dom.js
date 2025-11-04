@@ -1,6 +1,6 @@
 // IMPORTANT: import ADTs directly to avoid cycles with index.ts
-import { Reader } from "../adt/reader";
-import { IO } from "../adt/io";
+import { Reader } from "../adt/reader.js";
+import { IO } from "../adt/io.js";
 export const askEnv = Reader(env => env);
 export const askDocument = askEnv.map(e => e.document);
 export const askWindow = askEnv.map(e => e.window);

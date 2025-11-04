@@ -2,6 +2,12 @@
   "name": "effects-vdom",
   "version": "0.3.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./core/*": "./dist/core/*.js",
+    "./adt/*": "./dist/adt/*.js"
+  },
   "scripts": {
     "build": "tsc -p .",
     "dev": "esbuild src/index.ts --bundle --servedir=public --outfile=public/app.js --sourcemap",
@@ -11,6 +17,7 @@
     "format": "prettier --write 'src/**/*.{ts,tsx,js,json,md}'"
   },
   "devDependencies": {
+    "@types/node": "^24.10.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "esbuild": "^0.21.4",

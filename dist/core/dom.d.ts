@@ -1,5 +1,5 @@
-import { Reader } from "../adt/reader";
-import { IO } from "../adt/io";
+import { Reader } from "../adt/reader.js";
+import { IO } from "../adt/io.js";
 export type DomEnv = {
     document: Document;
     window: Window;
