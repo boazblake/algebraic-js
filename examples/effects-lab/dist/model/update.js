@@ -5,26 +5,71 @@ export const update = (msg, m, dispatch) => {
             return { model: { ...m, active: msg.key } };
         case "FETCH_RESOURCE": {
             const key = msg.key;
-            const readerTask = httpTask(`/${key}`).run(m.env);
-            const effect = IO(async () => {
-                const result = await readerTask.run();
-                if (result._tag === "Right")
-                    dispatch({ type: "FETCH_SUCCESS", key, data: result.right });
+            const { limit } = m[key];
+            const task = httpTask(`/${key}?_page=1&_limit=${limit}`).run(m.env);
+            const io = IO(async () => {
+                const res = await task.run();
+                if (res._tag === "Right")
+                    dispatch({ type: "FETCH_SUCCESS", key, data: res.right, page: 1 });
                 else
-                    dispatch({ type: "FETCH_ERROR", key, error: result.left.message });
+                    dispatch({
+                        type: "FETCH_ERROR",
+                        key,
+                        error: "status" in res.left
+                            ? res.left
+                            : { status: 0, message: res.left.message || "unknown err" },
+                    });
+                ;
             });
-            const logs = m.logs.chain(() => Writer(() => ["", [`Fetching ${key}`]]));
-            return {
-                model: { ...m, [key]: { ...m[key], loading: true }, logs },
-                effects: [effect],
-            };
-        }
-        case "FETCH_SUCCESS": {
-            const logs = m.logs.chain(() => Writer(() => ["", [`Fetched ${msg.key}`]]));
+            // run this effect individually for that key
             return {
                 model: {
                     ...m,
-                    [msg.key]: { data: msg.data, loading: false, error: undefined },
+                    [key]: { ...m[key], loading: true },
+                },
+                effects: [io],
+            };
+        }
+        case "FETCH_PAGE": {
+            const key = msg.key;
+            const page = msg.page;
+            const { limit } = m[key];
+            const task = httpTask(`/${key}?_page=${page}&_limit=${limit}`).run(m.env);
+            const io = IO(async () => {
+                const res = await task.run();
+                if (res._tag === "Right") {
+                    dispatch({ type: "FETCH_SUCCESS", key, data: res.right, page });
+                }
+                else {
+                    dispatch({
+                        type: "FETCH_ERROR",
+                        key,
+                        error: "status" in res.left
+                            ? res.left
+                            : { status: 0, message: res.left.message || "unknown err" },
+                    });
+                }
+            });
+            return {
+                model: {
+                    ...m,
+                    [key]: { ...m[key], loading: true },
+                },
+                effects: [io],
+            };
+        }
+        case "FETCH_SUCCESS": {
+            const key = msg.key;
+            const logs = m.logs.chain(() => Writer(() => ["", [`Fetched ${key} page ${msg.page || 1}`]]));
+            return {
+                model: {
+                    ...m,
+                    [key]: {
+                        ...m[key],
+                        data: [...msg.data],
+                        loading: false,
+                        page: msg.page || 1,
+                    },
                     logs,
                 },
             };

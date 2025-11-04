@@ -1,5 +1,5 @@
 import { IO } from "effects-vdom";
 import type { Model } from "./types";
-import {model} from './model'
+import { model } from "./model";
 
-export const init = IO(() => ({model, effects: []}));
+export const init = IO(() => ({ model, effects: [] }));

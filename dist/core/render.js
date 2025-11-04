@@ -1,5 +1,6 @@
 import { IO } from "../adt/io.js";
-export const renderApp = (renderer) => (rootIO, program) => rootIO.map((root) => {
+export const renderApp = (renderer) => (rootIO, program) => rootIO
+    .map((root) => {
     let model;
     const queue = [];
     let queued = false;
@@ -32,4 +33,5 @@ export const renderApp = (renderer) => (rootIO, program) => rootIO.map((root) =>
         start();
         return { dispatch };
     });
-}).chain((io) => io);
+})
+    .chain((io) => io);

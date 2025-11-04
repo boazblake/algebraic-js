@@ -6,41 +6,57 @@ export const update = (msg: Msg, m: Model, dispatch: (msg: Msg) => void) => {
     case "SET_ACTIVE":
       return { model: { ...m, active: msg.key } };
 
-   case "FETCH_RESOURCE": {
-    const key = msg.key;
-    const { limit } = m[key];
-    const task = httpTask<any[]>(`/${key}?_page=1&_limit=${limit}`).run(m.env);
+    case "FETCH_RESOURCE": {
+      const key = msg.key;
+      const { limit } = m[key];
+      const task = httpTask<any[]>(`/${key}?_page=1&_limit=${limit}`).run(
+        m.env
+      );
 
-    const io = IO(async () => {
-      const res = await task.run();
-      if (res._tag === "Right")
-        dispatch({ type: "FETCH_SUCCESS", key, data: res.right, page: 1 });
-      else
-        dispatch({ type: "FETCH_ERROR", key, error: res.left });
-    });
+      const io = IO(async () => {
+        const res = await task.run();
+        if (res._tag === "Right")
+          dispatch({ type: "FETCH_SUCCESS", key, data: res.right, page: 1 });
+        else dispatch({
+            type: "FETCH_ERROR",
+            key,
+            error:
+              "status" in res.left
+                ? res.left
+                : { status: 0, message: res.left.message || "unknown err"},
+          });;
+      });
 
-    // run this effect individually for that key
-    return {
-      model: {
-        ...m,
-        [key]: { ...m[key], loading: true }
-      },
-      effects: [io],
-    };
-}
+      return {
+        model: {
+          ...m,
+          [key]: { ...m[key], loading: true },
+        },
+        effects: [io],
+      };
+    }
 
     case "FETCH_PAGE": {
       const key = msg.key;
       const page = msg.page;
       const { limit } = m[key];
-      const task = httpTask<any[]>(`/${key}?_page=${page}&_limit=${limit}`).run(m.env);
+      const task = httpTask<any[]>(`/${key}?_page=${page}&_limit=${limit}`).run(
+        m.env
+      );
 
       const io = IO(async () => {
         const res = await task.run();
         if (res._tag === "Right") {
           dispatch({ type: "FETCH_SUCCESS", key, data: res.right, page });
         } else {
-          dispatch({ type: "FETCH_ERROR", key, error: res.left });
+             dispatch({
+            type: "FETCH_ERROR",
+            key,
+            error:
+              "status" in res.left
+                ? res.left
+                : { status: 0, message: res.left.message || "unknown err"},
+          });
         }
       });
 
@@ -53,23 +69,25 @@ export const update = (msg: Msg, m: Model, dispatch: (msg: Msg) => void) => {
       };
     }
 
- case "FETCH_SUCCESS": {
-  const key = msg.key;
-  const logs = m.logs.chain(() => Writer(() => ["", [`Fetched ${key} page ${msg.page || 1}`]]));
+    case "FETCH_SUCCESS": {
+      const key = msg.key;
+      const logs = m.logs.chain(() =>
+        Writer(() => ["", [`Fetched ${key} page ${msg.page || 1}`]])
+      );
 
-  return {
-    model: {
-      ...m,
-      [key]: {
-        ...m[key],
-        data: [...msg.data],
-        loading: false,
-        page: msg.page || 1,
-      },
-      logs,
-    },
-  };
-}
+      return {
+        model: {
+          ...m,
+          [key]: {
+            ...m[key],
+            data: [...msg.data],
+            loading: false,
+            page: msg.page || 1,
+          },
+          logs,
+        },
+      };
+    }
 
     case "FETCH_ERROR": {
       const logs = m.logs.chain(() =>

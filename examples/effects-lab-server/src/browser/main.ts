@@ -1,5 +1,9 @@
-import { renderApp, browserEnv, runDomIO } from "../../node_modules/effects-vdom/dist/core/index.js";
-import { Writer ,IO} from "../../node_modules/effects-vdom/dist/adt/index.js";
+import {
+  renderApp,
+  browserEnv,
+  runDomIO,
+} from "../../node_modules/effects-vdom/dist/core/index.js";
+import { Writer, IO } from "../../node_modules/effects-vdom/dist/adt/index.js";
 import { renderer } from "../shared/renderer.js";
 import { program } from "./program.js";
 import { registerGlobalIO } from "../shared/utils/globalIO.js";

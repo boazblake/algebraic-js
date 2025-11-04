@@ -44,6 +44,15 @@ export type Msg =
   | { type: "FETCH_PAGE"; key: keyof EnvResources; page: number }
   | { type: "SET_PAGE"; key: keyof EnvResources; page: number }
   | { type: "FETCH_RESOURCE"; key: keyof EnvResources }
-  | { type: "FETCH_SUCCESS"; key: keyof EnvResources; data: any[], page: number }
-  | { type: "FETCH_ERROR"; key: keyof EnvResources; error: string | { status: number; message: string } }
+  | {
+      type: "FETCH_SUCCESS";
+      key: keyof EnvResources;
+      data: any[];
+      page: number;
+    }
+  | {
+      type: "FETCH_ERROR";
+      key: keyof EnvResources;
+      error: string | { status: number; message: string };
+    }
   | { type: "TOGGLE_THEME" };

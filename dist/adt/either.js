@@ -1,8 +1,11 @@
 /** Constructors */
 export const Left = (l) => ({ _tag: "Left", left: l });
-export const Right = (r) => ({ _tag: "Right", right: r });
+export const Right = (r) => ({
+    _tag: "Right",
+    right: r,
+});
 /** Functor map */
-export const map = (f, e) => (e._tag === "Right" ? Right(f(e.right)) : e);
+export const map = (f, e) => e._tag === "Right" ? Right(f(e.right)) : e;
 /** Applicative apply */
 export const ap = (ef, ea) => {
     if (ef._tag === "Left")
@@ -22,17 +25,17 @@ export const fold = (onLeft, onRight, e) => (e._tag === "Left" ? onLeft(e.left) 
 /** Applicative */
 export const of = (a) => Right(a);
 /** Get Right or default */
-export const getOrElse = (defaultValue, e) => (e._tag === "Right" ? e.right : defaultValue);
+export const getOrElse = (defaultValue, e) => e._tag === "Right" ? e.right : defaultValue;
 /** Get Right or compute default */
 export const getOrElseW = (onLeft, e) => (e._tag === "Right" ? e.right : onLeft(e.left));
 /** Alternative - returns first Right */
-export const alt = (e1, e2) => (e1._tag === "Right" ? e1 : e2);
+export const alt = (e1, e2) => e1._tag === "Right" ? e1 : e2;
 /** Check if Either is Left */
 export const isLeft = (e) => e._tag === "Left";
 /** Check if Either is Right */
 export const isRight = (e) => e._tag === "Right";
 /** Convert nullable to Either */
-export const fromNullable = (onNull) => (a) => (a == null ? Left(onNull) : Right(a));
+export const fromNullable = (onNull) => (a) => a == null ? Left(onNull) : Right(a);
 /** Try-catch wrapper */
 export const tryCatch = (f) => {
     try {

@@ -7,7 +7,7 @@ export const Success = (value) => ({
     value,
 });
 /** Functor map */
-export const map = (f, v) => v._tag === "Success" ? Success(f(v.value)) : v;
+export const map = (f, v) => (v._tag === "Success" ? Success(f(v.value)) : v);
 /** Applicative apply - accumulates errors */
 export const ap = (vf, va) => {
     if (vf._tag === "Failure" && va._tag === "Failure")
@@ -19,19 +19,19 @@ export const ap = (vf, va) => {
     return Success(vf.value(va.value));
 };
 /** Monad chain - short-circuits on first error */
-export const chain = (f, v) => v._tag === "Success" ? f(v.value) : v;
+export const chain = (f, v) => (v._tag === "Success" ? f(v.value) : v);
 /** Bifunctor bimap */
 export const bimap = (onFailure, onSuccess, v) => v._tag === "Failure"
     ? Failure(onFailure(v.errors))
     : Success(onSuccess(v.value));
 /** Map over errors */
-export const mapErrors = (f, v) => v._tag === "Failure" ? Failure(f(v.errors)) : v;
+export const mapErrors = (f, v) => (v._tag === "Failure" ? Failure(f(v.errors)) : v);
 /** Lift value */
 export const of = (a) => Success(a);
 /** Fold */
 export const fold = (onFail, onSucc, v) => (v._tag === "Failure" ? onFail(v.errors) : onSucc(v.value));
 /** Get value or default */
-export const getOrElse = (defaultValue, v) => (v._tag === "Success" ? v.value : defaultValue);
+export const getOrElse = (defaultValue, v) => v._tag === "Success" ? v.value : defaultValue;
 /** Get value or compute default */
 export const getOrElseW = (onFailure, v) => (v._tag === "Success" ? v.value : onFailure(v.errors));
 /** Check if Validation is Failure */

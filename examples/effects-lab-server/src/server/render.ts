@@ -1,9 +1,14 @@
-import { renderToString,runDomIO,writeHtml, browserEnv } from "../../node_modules/effects-vdom/dist/core/index.js";
+import {
+  renderToString,
+  runDomIO,
+  writeHtml,
+  browserEnv,
+} from "../../node_modules/effects-vdom/dist/core/index.js";
 import { program } from "../browser/program.js";
 import { serverDomEnv } from "./env.js";
 
 export const renderPage = async () => {
-    const env = serverDomEnv();
+  const env = serverDomEnv();
   const { model, effects } = program.init.run();
   for (const fx of effects ?? []) runDomIO(fx, env);
   const vnode = program.view(model, () => {});

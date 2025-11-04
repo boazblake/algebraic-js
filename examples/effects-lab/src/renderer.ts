@@ -13,4 +13,4 @@ export const renderer = (root: Element, vnode: Element) => {
   }
 };
 
-export const { div, h1, h2, p, button, section, input, ul, li, span} = hh(h);
+export const { div, h1, h2, p, button, section, input, ul, li, span } = hh(h);

@@ -21,11 +21,20 @@ export const Id = <A>(a: A): Id<A> => ({
 Id.of = <A>(a: A): Id<A> => Id(a);
 
 /** Applicative apply */
-Id.ap = <A, B>(fb: Id<(a: A) => B>) => (fa: Id<A>): Id<B> => fa.ap(fb);
+Id.ap =
+  <A, B>(fb: Id<(a: A) => B>) =>
+  (fa: Id<A>): Id<B> =>
+    fa.ap(fb);
 
 /** Static utilities for functional composition */
-Id.map = <A, B>(f: (a: A) => B) => (id: Id<A>): Id<B> => id.map(f);
-Id.chain = <A, B>(f: (a: A) => Id<B>) => (id: Id<A>): Id<B> => id.chain(f);
+Id.map =
+  <A, B>(f: (a: A) => B) =>
+  (id: Id<A>): Id<B> =>
+    id.map(f);
+Id.chain =
+  <A, B>(f: (a: A) => Id<B>) =>
+  (id: Id<A>): Id<B> =>
+    id.chain(f);
 Id.run = <A>(id: Id<A>): A => id.run();
 
 /** Extract value */

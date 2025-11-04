@@ -16,8 +16,7 @@ export const Success = <A>(value: A): Validation<never, A> => ({
 export const map = <E, A, B>(
   f: (a: A) => B,
   v: Validation<E, A>
-): Validation<E, B> =>
-  v._tag === "Success" ? Success(f(v.value)) : v;
+): Validation<E, B> => (v._tag === "Success" ? Success(f(v.value)) : v);
 
 /** Applicative apply - accumulates errors */
 export const ap = <E, A, B>(
@@ -35,8 +34,7 @@ export const ap = <E, A, B>(
 export const chain = <E, A, B>(
   f: (a: A) => Validation<E, B>,
   v: Validation<E, A>
-): Validation<E, B> =>
-  v._tag === "Success" ? f(v.value) : v;
+): Validation<E, B> => (v._tag === "Success" ? f(v.value) : v);
 
 /** Bifunctor bimap */
 export const bimap = <E, A, E2, B>(
@@ -52,8 +50,7 @@ export const bimap = <E, A, E2, B>(
 export const mapErrors = <E, A, E2>(
   f: (errs: E[]) => E2[],
   v: Validation<E, A>
-): Validation<E2, A> =>
-  v._tag === "Failure" ? Failure(f(v.errors)) : v;
+): Validation<E2, A> => (v._tag === "Failure" ? Failure(f(v.errors)) : v);
 
 /** Lift value */
 export const of = <A>(a: A): Validation<never, A> => Success(a);
@@ -66,10 +63,8 @@ export const fold = <E, A, B>(
 ): B => (v._tag === "Failure" ? onFail(v.errors) : onSucc(v.value));
 
 /** Get value or default */
-export const getOrElse = <E, A>(
-  defaultValue: A,
-  v: Validation<E, A>
-): A => (v._tag === "Success" ? v.value : defaultValue);
+export const getOrElse = <E, A>(defaultValue: A, v: Validation<E, A>): A =>
+  v._tag === "Success" ? v.value : defaultValue;
 
 /** Get value or compute default */
 export const getOrElseW = <E, A, B>(
@@ -78,12 +73,14 @@ export const getOrElseW = <E, A, B>(
 ): A | B => (v._tag === "Success" ? v.value : onFailure(v.errors));
 
 /** Check if Validation is Failure */
-export const isFailure = <E, A>(v: Validation<E, A>): v is { _tag: "Failure"; errors: E[] } =>
-  v._tag === "Failure";
+export const isFailure = <E, A>(
+  v: Validation<E, A>
+): v is { _tag: "Failure"; errors: E[] } => v._tag === "Failure";
 
 /** Check if Validation is Success */
-export const isSuccess = <E, A>(v: Validation<E, A>): v is { _tag: "Success"; value: A } =>
-  v._tag === "Success";
+export const isSuccess = <E, A>(
+  v: Validation<E, A>
+): v is { _tag: "Success"; value: A } => v._tag === "Success";
 
 /** Create Failure from single error */
 export const fail = <E>(error: E): Validation<E, never> => Failure([error]);
@@ -104,7 +101,7 @@ export const combine = <E, A>(
 ): Validation<E, A[]> => {
   const successes: A[] = [];
   const errors: E[] = [];
-  
+
   for (const v of validations) {
     if (v._tag === "Success") {
       successes.push(v.value);
@@ -112,7 +109,7 @@ export const combine = <E, A>(
       errors.push(...v.errors);
     }
   }
-  
+
   return errors.length > 0 ? Failure(errors) : Success(successes);
 };
 
@@ -123,7 +120,7 @@ export const traverse = <E, A, B>(
 ): Validation<E, B[]> => {
   const results: B[] = [];
   const errors: E[] = [];
-  
+
   for (const a of arr) {
     const vb = f(a);
     if (vb._tag === "Success") {
@@ -132,7 +129,7 @@ export const traverse = <E, A, B>(
       errors.push(...vb.errors);
     }
   }
-  
+
   return errors.length > 0 ? Failure(errors) : Success(results);
 };
 
@@ -141,11 +138,10 @@ export const sequence = <E, A>(arr: Validation<E, A>[]): Validation<E, A[]> =>
   traverse((x) => x, arr);
 
 /** Validate with predicate */
-export const fromPredicate = <E, A>(
-  predicate: (a: A) => boolean,
-  onFalse: (a: A) => E
-) => (a: A): Validation<E, A> =>
-  predicate(a) ? Success(a) : fail(onFalse(a));
+export const fromPredicate =
+  <E, A>(predicate: (a: A) => boolean, onFalse: (a: A) => E) =>
+  (a: A): Validation<E, A> =>
+    predicate(a) ? Success(a) : fail(onFalse(a));
 
 /** Unified object export */
 export const Validation = {

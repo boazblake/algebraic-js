@@ -21,14 +21,20 @@ State.put = (s) => State(() => [undefined, s]);
 State.modify = (f) => State((s) => [undefined, f(s)]);
 State.gets = (f) => State((s) => [f(s), s]);
 /** Point-free combinators */
-State.map = (f) => (st) => st.map(f);
-State.chain = (f) => (st) => st.chain(f);
-State.ap = (fb) => (fa) => fa.ap(fb);
-State.run = (s) => (st) => st.run(s);
+State.map =
+    (f) => (st) => st.map(f);
+State.chain =
+    (f) => (st) => st.chain(f);
+State.ap =
+    (fb) => (fa) => fa.ap(fb);
+State.run =
+    (s) => (st) => st.run(s);
 /** Evaluate - get only the result value */
-State.evalState = (s) => (st) => st.run(s)[0];
+State.evalState =
+    (s) => (st) => st.run(s)[0];
 /** Execute - get only the final state */
-State.execState = (s) => (st) => st.run(s)[1];
+State.execState =
+    (s) => (st) => st.run(s)[1];
 /** Sequence an array of State computations */
 State.sequence = (states) => State((s) => {
     let currentState = s;
@@ -41,5 +47,6 @@ State.sequence = (states) => State((s) => {
     return [values, currentState];
 });
 /** Traverse an array */
-State.traverse = (f) => (arr) => State.sequence(arr.map(f));
+State.traverse =
+    (f) => (arr) => State.sequence(arr.map(f));
 export default State;

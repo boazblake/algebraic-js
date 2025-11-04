@@ -16,9 +16,11 @@ export type Stream<A> = {
   skip: (n: number) => Stream<A>;
 };
 
-export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A> => ({
+export const Stream = <A>(
+  subscribe: (o: Observer<A>) => Unsubscribe
+): Stream<A> => ({
   subscribe,
-  
+
   map: <B>(f: (a: A) => B): Stream<B> =>
     Stream((o) =>
       subscribe({
@@ -33,11 +35,11 @@ export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A>
         complete: o.complete,
       })
     ),
-    
+
   chain: <B>(f: (a: A) => Stream<B>): Stream<B> =>
     Stream((o) => {
       let innerUnsub: Unsubscribe | null = null;
-      
+
       const outerUnsub = subscribe({
         next: (a) => {
           try {
@@ -51,13 +53,13 @@ export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A>
         error: o.error,
         complete: o.complete,
       });
-      
+
       return () => {
         innerUnsub?.();
         outerUnsub();
       };
     }),
-    
+
   filter: (predicate: (a: A) => boolean): Stream<A> =>
     Stream((o) =>
       subscribe({
@@ -72,7 +74,7 @@ export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A>
         complete: o.complete,
       })
     ),
-    
+
   scan: <B>(f: (acc: B, a: A) => B, initial: B): Stream<B> =>
     Stream((o) => {
       let acc = initial;
@@ -89,7 +91,7 @@ export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A>
         complete: o.complete,
       });
     }),
-    
+
   take: (n: number): Stream<A> =>
     Stream((o) => {
       let count = 0;
@@ -109,7 +111,7 @@ export const Stream = <A>(subscribe: (o: Observer<A>) => Unsubscribe): Stream<A>
       });
       return unsub;
     }),
-    
+
   skip: (n: number): Stream<A> =>
     Stream((o) => {
       let count = 0;
@@ -145,8 +147,7 @@ Stream.empty = <A>(): Stream<A> =>
     return () => {};
   });
 
-Stream.never = <A>(): Stream<A> =>
-  Stream(() => () => {});
+Stream.never = <A>(): Stream<A> => Stream(() => () => {});
 
 Stream.fromPromise = <A>(p: Promise<A>): Stream<A> =>
   Stream((o) => {
@@ -220,13 +221,13 @@ Stream.combineLatest = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
     let latestB: B | undefined;
     let hasA = false;
     let hasB = false;
-    
+
     const emit = () => {
       if (hasA && hasB) {
         o.next([latestA!, latestB!]);
       }
     };
-    
+
     const unsubA = sa.subscribe({
       next: (a) => {
         latestA = a;
@@ -235,7 +236,7 @@ Stream.combineLatest = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
       },
       error: o.error,
     });
-    
+
     const unsubB = sb.subscribe({
       next: (b) => {
         latestB = b;
@@ -244,7 +245,7 @@ Stream.combineLatest = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
       },
       error: o.error,
     });
-    
+
     return () => {
       unsubA();
       unsubB();
@@ -255,13 +256,13 @@ Stream.zip = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
   Stream((o) => {
     const queueA: A[] = [];
     const queueB: B[] = [];
-    
+
     const tryEmit = () => {
       if (queueA.length > 0 && queueB.length > 0) {
         o.next([queueA.shift()!, queueB.shift()!]);
       }
     };
-    
+
     const unsubA = sa.subscribe({
       next: (a) => {
         queueA.push(a);
@@ -270,7 +271,7 @@ Stream.zip = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
       error: o.error,
       complete: o.complete,
     });
-    
+
     const unsubB = sb.subscribe({
       next: (b) => {
         queueB.push(b);
@@ -279,7 +280,7 @@ Stream.zip = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
       error: o.error,
       complete: o.complete,
     });
-    
+
     return () => {
       unsubA();
       unsubB();
@@ -287,58 +288,62 @@ Stream.zip = <A, B>(sa: Stream<A>, sb: Stream<B>): Stream<[A, B]> =>
   });
 
 /** Utilities */
-Stream.debounce = <A>(ms: number) => (s: Stream<A>): Stream<A> =>
-  Stream((o) => {
-    let timeoutId: NodeJS.Timeout | null = null;
-    const unsub = s.subscribe({
-      next: (a) => {
+Stream.debounce =
+  <A>(ms: number) =>
+  (s: Stream<A>): Stream<A> =>
+    Stream((o) => {
+      let timeoutId: NodeJS.Timeout | null = null;
+      const unsub = s.subscribe({
+        next: (a) => {
+          if (timeoutId) clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => o.next(a), ms);
+        },
+        error: o.error,
+        complete: o.complete,
+      });
+      return () => {
         if (timeoutId) clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => o.next(a), ms);
-      },
-      error: o.error,
-      complete: o.complete,
+        unsub();
+      };
     });
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-      unsub();
-    };
-  });
 
-Stream.throttle = <A>(ms: number) => (s: Stream<A>): Stream<A> =>
-  Stream((o) => {
-    let lastEmit = 0;
-    return s.subscribe({
-      next: (a) => {
-        const now = Date.now();
-        if (now - lastEmit >= ms) {
-          o.next(a);
-          lastEmit = now;
-        }
-      },
-      error: o.error,
-      complete: o.complete,
+Stream.throttle =
+  <A>(ms: number) =>
+  (s: Stream<A>): Stream<A> =>
+    Stream((o) => {
+      let lastEmit = 0;
+      return s.subscribe({
+        next: (a) => {
+          const now = Date.now();
+          if (now - lastEmit >= ms) {
+            o.next(a);
+            lastEmit = now;
+          }
+        },
+        error: o.error,
+        complete: o.complete,
+      });
     });
-  });
 
-Stream.distinctUntilChanged = <A>(equals?: (a: A, b: A) => boolean) => (
-  s: Stream<A>
-): Stream<A> =>
-  Stream((o) => {
-    let last: A | undefined;
-    let hasLast = false;
-    const eq = equals || ((a, b) => a === b);
-    
-    return s.subscribe({
-      next: (a) => {
-        if (!hasLast || !eq(last!, a)) {
-          o.next(a);
-          last = a;
-          hasLast = true;
-        }
-      },
-      error: o.error,
-      complete: o.complete,
+Stream.distinctUntilChanged =
+  <A>(equals?: (a: A, b: A) => boolean) =>
+  (s: Stream<A>): Stream<A> =>
+    Stream((o) => {
+      let last: A | undefined;
+      let hasLast = false;
+      const eq = equals || ((a, b) => a === b);
+
+      return s.subscribe({
+        next: (a) => {
+          if (!hasLast || !eq(last!, a)) {
+            o.next(a);
+            last = a;
+            hasLast = true;
+          }
+        },
+        error: o.error,
+        complete: o.complete,
+      });
     });
-  });
 
 export default Stream;

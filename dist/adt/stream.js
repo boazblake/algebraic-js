@@ -222,51 +222,54 @@ Stream.zip = (sa, sb) => Stream((o) => {
     };
 });
 /** Utilities */
-Stream.debounce = (ms) => (s) => Stream((o) => {
-    let timeoutId = null;
-    const unsub = s.subscribe({
-        next: (a) => {
+Stream.debounce =
+    (ms) => (s) => Stream((o) => {
+        let timeoutId = null;
+        const unsub = s.subscribe({
+            next: (a) => {
+                if (timeoutId)
+                    clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => o.next(a), ms);
+            },
+            error: o.error,
+            complete: o.complete,
+        });
+        return () => {
             if (timeoutId)
                 clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => o.next(a), ms);
-        },
-        error: o.error,
-        complete: o.complete,
+            unsub();
+        };
     });
-    return () => {
-        if (timeoutId)
-            clearTimeout(timeoutId);
-        unsub();
-    };
-});
-Stream.throttle = (ms) => (s) => Stream((o) => {
-    let lastEmit = 0;
-    return s.subscribe({
-        next: (a) => {
-            const now = Date.now();
-            if (now - lastEmit >= ms) {
-                o.next(a);
-                lastEmit = now;
-            }
-        },
-        error: o.error,
-        complete: o.complete,
+Stream.throttle =
+    (ms) => (s) => Stream((o) => {
+        let lastEmit = 0;
+        return s.subscribe({
+            next: (a) => {
+                const now = Date.now();
+                if (now - lastEmit >= ms) {
+                    o.next(a);
+                    lastEmit = now;
+                }
+            },
+            error: o.error,
+            complete: o.complete,
+        });
     });
-});
-Stream.distinctUntilChanged = (equals) => (s) => Stream((o) => {
-    let last;
-    let hasLast = false;
-    const eq = equals || ((a, b) => a === b);
-    return s.subscribe({
-        next: (a) => {
-            if (!hasLast || !eq(last, a)) {
-                o.next(a);
-                last = a;
-                hasLast = true;
-            }
-        },
-        error: o.error,
-        complete: o.complete,
+Stream.distinctUntilChanged =
+    (equals) => (s) => Stream((o) => {
+        let last;
+        let hasLast = false;
+        const eq = equals || ((a, b) => a === b);
+        return s.subscribe({
+            next: (a) => {
+                if (!hasLast || !eq(last, a)) {
+                    o.next(a);
+                    last = a;
+                    hasLast = true;
+                }
+            },
+            error: o.error,
+            complete: o.complete,
+        });
     });
-});
 export default Stream;

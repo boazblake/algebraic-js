@@ -26,9 +26,12 @@ export const Writer = (run) => ({
 Writer.of = (a, empty) => Writer(() => [a, empty]);
 Writer.tell = (w) => Writer(() => [undefined, w]);
 /** Point-free combinators */
-Writer.map = (f) => (w) => w.map(f);
-Writer.chain = (f) => (w) => w.chain(f);
-Writer.ap = (fb) => (fa) => fa.ap(fb);
+Writer.map =
+    (f) => (w) => w.map(f);
+Writer.chain =
+    (f) => (w) => w.chain(f);
+Writer.ap =
+    (fb) => (fa) => fa.ap(fb);
 Writer.run = (w) => w.run();
 /** Extract just the value */
 Writer.evalWriter = (w) => w.run()[0];
@@ -45,10 +48,11 @@ Writer.pass = (w) => Writer(() => {
     return [a, f(log)];
 });
 /** Censor - transform the log */
-Writer.censor = (f) => (w) => Writer(() => {
-    const [a, log] = w.run();
-    return [a, f(log)];
-});
+Writer.censor =
+    (f) => (w) => Writer(() => {
+        const [a, log] = w.run();
+        return [a, f(log)];
+    });
 /** Utility for updating + logging (for array logs) */
 Writer.updateValueAndLog = (w, message) => w.chain((a) => Writer(() => [a, [message]]));
 /** Sequence an array of Writers */
@@ -71,6 +75,7 @@ Writer.sequence = (writers) => Writer(() => {
     return [values, combinedLog];
 });
 /** Traverse an array */
-Writer.traverse = (f) => (arr) => Writer.sequence(arr.map(f));
+Writer.traverse =
+    (f) => (arr) => Writer.sequence(arr.map(f));
 /** Unified object export */
 export default Writer;

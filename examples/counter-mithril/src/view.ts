@@ -1,4 +1,3 @@
-
 import m from "mithril";
 import type { Model, Msg } from "./types";
 

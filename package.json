@@ -12,9 +12,9 @@
     "build": "tsc -p .",
     "dev": "esbuild src/index.ts --bundle --servedir=public --outfile=public/app.js --sourcemap",
     "serve": "serve public",
-    "lint": "eslint 'src/**/*.{ts,tsx}'",
-    "lint:fix": "eslint 'src/**/*.{ts,tsx}' --fix",
-    "format": "prettier --write 'src/**/*.{ts,tsx,js,json,md}'"
+    "lint": "oxlint . && eslint . --ext .ts,.js",
+    "lint:fix": "oxlint --fix . && eslint --fix . --ext .ts,.js",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

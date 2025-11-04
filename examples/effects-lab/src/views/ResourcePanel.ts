@@ -1,12 +1,15 @@
 import { div, h1, button, p, ul, li, section, span } from "../renderer";
 import type { Model, Msg, Resource, EnvResources } from "../model/types";
 
-const ResourceList = (key: keyof EnvResources, res: Resource<any>, dispatch: (msg: Msg) => void) => {
+const ResourceList = (
+  key: keyof EnvResources,
+  res: Resource<any>,
+  dispatch: (msg: Msg) => void
+) => {
   const { data, page, limit, loading, error } = res;
-  const nextPage = page + 1
-  const prevPage = page - 1
-  const hasData = res.data.length  || res.loading || res.error;
-
+  const nextPage = page + 1;
+  const prevPage = page - 1;
+  const hasData = res.data.length || res.loading || res.error;
 
   return section({ className: "p-4 border rounded" }, [
     h1({ className: "text-lg font-bold mb-2 capitalize" }, key),
@@ -18,32 +21,37 @@ const ResourceList = (key: keyof EnvResources, res: Resource<any>, dispatch: (ms
       res.loading ? "Loading..." : "Fetch"
     ),
 
-    hasData &&  div({ className: "flex items-center gap-3 mt-3" }, [
-      button(
-  {
-    id: `${key}-prev-${prevPage}`,
-    className:
-      "px-3 py-1 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed",
-    disabled: res.page === 1 || res.loading,
-    onclick: () => dispatch({ type: "FETCH_PAGE", key, page: res.page - 1 }),
-  },
-  "Prev"
-),
-span({ className: "text-sm" }, `Page ${res.page}`),
-button(
-  {
-    id: `${key}-next-${nextPage}`,
-    className: "px-3 py-1 bg-gray-200 rounded",
-    onclick: () => dispatch({ type: "FETCH_PAGE", key, page: res.page + 1 }),
-  },
-  "Next"
-)
-    ]),
+    hasData &&
+      div({ className: "flex items-center gap-3 mt-3" }, [
+        button(
+          {
+            id: `${key}-prev-${prevPage}`,
+            className:
+              "px-3 py-1 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed",
+            disabled: res.page === 1 || res.loading,
+            onclick: () =>
+              dispatch({ type: "FETCH_PAGE", key, page: res.page - 1 }),
+          },
+          "Prev"
+        ),
+        span({ className: "text-sm" }, `Page ${res.page}`),
+        button(
+          {
+            id: `${key}-next-${nextPage}`,
+            className: "px-3 py-1 bg-gray-200 rounded",
+            onclick: () =>
+              dispatch({ type: "FETCH_PAGE", key, page: res.page + 1 }),
+          },
+          "Next"
+        ),
+      ]),
     res.error && p({ className: "text-red-600" }, `Error: ${res.error}`),
 
     ul(
       { className: "text-sm space-y-1" },
-      res.data.map((item: any) => li({ className: "border-b pb-1" }, JSON.stringify(item)))
+      res.data.map((item: any) =>
+        li({ className: "border-b pb-1" }, JSON.stringify(item))
+      )
     ),
   ]);
 };

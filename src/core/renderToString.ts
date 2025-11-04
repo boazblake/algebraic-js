@@ -7,11 +7,26 @@ const escapeHtml = (s: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-const isVNode = (n: unknown): n is { tag: string; props?: any; children?: any } =>
+const isVNode = (
+  n: unknown
+): n is { tag: string; props?: any; children?: any } =>
   !!n && typeof n === "object" && "tag" in (n as any);
 
 const VOID = new Set([
-  "area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ]);
 
 export const renderToString = (node: unknown): string => {

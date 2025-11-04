@@ -1,6 +1,6 @@
 import type { Writer } from "effects-vdom";
 
-export type Env = { fetch: typeof fetch, baseUrl: string};
+export type Env = { fetch: typeof fetch; baseUrl: string };
 
 export type Post = { id: number; title: string; body: string };
 export type Comment = { id: number; body: string };
@@ -39,6 +39,15 @@ export type Msg =
   | { type: "FETCH_PAGE"; key: keyof EnvResources; page: number }
   | { type: "SET_PAGE"; key: keyof EnvResources; page: number }
   | { type: "FETCH_RESOURCE"; key: keyof EnvResources }
-  | { type: "FETCH_SUCCESS"; key: keyof EnvResources; data: any[] }
-  | { type: "FETCH_ERROR"; key: keyof EnvResources; error: string }
+  | {
+      type: "FETCH_SUCCESS";
+      key: keyof EnvResources;
+      data: any[];
+      page: number;
+    }
+  | {
+      type: "FETCH_ERROR";
+      key: keyof EnvResources;
+      error: string | { status: number; message: string };
+    }
   | { type: "TOGGLE_THEME" };

@@ -5,7 +5,20 @@ const escapeHtml = (s) => s
     .replace(/"/g, "&quot;");
 const isVNode = (n) => !!n && typeof n === "object" && "tag" in n;
 const VOID = new Set([
-    "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr",
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
 ]);
 export const renderToString = (node) => {
     if (node == null || node === false || node === true)

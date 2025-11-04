@@ -8,14 +8,18 @@ export const IO = (run) => ({
 /** Static pure helper */
 IO.of = (a) => IO(() => a);
 /** Static combinators (point-free) */
-IO.map = (f) => (io) => io.map(f);
-IO.chain = (f) => (io) => io.chain(f);
-IO.ap = (fb) => (fa) => fa.ap(fb);
+IO.map =
+    (f) => (io) => io.map(f);
+IO.chain =
+    (f) => (io) => io.chain(f);
+IO.ap =
+    (fb) => (fa) => fa.ap(fb);
 IO.run = (io) => io.run();
 /** Sequence an array of IOs */
 IO.sequence = (ios) => IO(() => ios.map((io) => io.run()));
 /** Traverse an array */
-IO.traverse = (f) => (arr) => IO(() => arr.map((a) => f(a).run()));
+IO.traverse =
+    (f) => (arr) => IO(() => arr.map((a) => f(a).run()));
 /** Delay execution */
 IO.delay = (ms, io) => IO(() => {
     const start = Date.now();

@@ -4,13 +4,14 @@ export type Either<L, R> = Left<L> | Right<R>;
 
 /** Constructors */
 export const Left = <L>(l: L): Either<L, never> => ({ _tag: "Left", left: l });
-export const Right = <R>(r: R): Either<never, R> => ({ _tag: "Right", right: r });
+export const Right = <R>(r: R): Either<never, R> => ({
+  _tag: "Right",
+  right: r,
+});
 
 /** Functor map */
-export const map = <L, A, B>(
-  f: (a: A) => B,
-  e: Either<L, A>
-): Either<L, B> => (e._tag === "Right" ? Right(f(e.right)) : e);
+export const map = <L, A, B>(f: (a: A) => B, e: Either<L, A>): Either<L, B> =>
+  e._tag === "Right" ? Right(f(e.right)) : e;
 
 /** Applicative apply */
 export const ap = <L, A, B>(
@@ -53,10 +54,8 @@ export const fold = <L, A, B>(
 export const of = <A>(a: A): Either<never, A> => Right(a);
 
 /** Get Right or default */
-export const getOrElse = <L, A>(
-  defaultValue: A,
-  e: Either<L, A>
-): A => (e._tag === "Right" ? e.right : defaultValue);
+export const getOrElse = <L, A>(defaultValue: A, e: Either<L, A>): A =>
+  e._tag === "Right" ? e.right : defaultValue;
 
 /** Get Right or compute default */
 export const getOrElseW = <L, A, B>(
@@ -65,21 +64,22 @@ export const getOrElseW = <L, A, B>(
 ): A | B => (e._tag === "Right" ? e.right : onLeft(e.left));
 
 /** Alternative - returns first Right */
-export const alt = <L, A>(
-  e1: Either<L, A>,
-  e2: Either<L, A>
-): Either<L, A> => (e1._tag === "Right" ? e1 : e2);
+export const alt = <L, A>(e1: Either<L, A>, e2: Either<L, A>): Either<L, A> =>
+  e1._tag === "Right" ? e1 : e2;
 
 /** Check if Either is Left */
-export const isLeft = <L, A>(e: Either<L, A>): e is Left<L> => e._tag === "Left";
+export const isLeft = <L, A>(e: Either<L, A>): e is Left<L> =>
+  e._tag === "Left";
 
 /** Check if Either is Right */
-export const isRight = <L, A>(e: Either<L, A>): e is Right<A> => e._tag === "Right";
+export const isRight = <L, A>(e: Either<L, A>): e is Right<A> =>
+  e._tag === "Right";
 
 /** Convert nullable to Either */
-export const fromNullable = <L>(onNull: L) => <A>(
-  a: A | null | undefined
-): Either<L, A> => (a == null ? Left(onNull) : Right(a));
+export const fromNullable =
+  <L>(onNull: L) =>
+  <A>(a: A | null | undefined): Either<L, A> =>
+    a == null ? Left(onNull) : Right(a);
 
 /** Try-catch wrapper */
 export const tryCatch = <A>(f: () => A): Either<unknown, A> => {

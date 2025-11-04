@@ -11,4 +11,4 @@ export const renderer = (root, vnode) => {
         current = nanomorph(current, vnode);
     }
 };
-export const { div, h1, h2, p, button, section, input, ul, li } = hh(h);
+export const { div, h1, h2, p, button, section, input, ul, li, span } = hh(h);
