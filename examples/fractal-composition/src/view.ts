@@ -76,7 +76,7 @@ export const view = (m: Model, dispatch: (msg: Msg) => void) =>
 
 // Shared panel styling
 const panelClass = () =>
-  "bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between hover:shadow-xl hover:scale-[1.01] transition-transform border border-gray-100";
+  "bg-white rounded-2xl shadow-md p-6 flex flex-col hover:shadow-xl hover:scale-[1.01] transition-transform border border-gray-100 justify-center";
 
 // Shared title styling
 const titleClass = () =>

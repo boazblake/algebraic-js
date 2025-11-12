@@ -25,7 +25,10 @@ export const view = (m: Model, dispatch: (msg: Msg) => void) =>
     ]),
 
     ul(
-      { className: "divide-y divide-gray-200" },
+      {
+        className:
+          "divide-y divide-gray-200, overflow-y-auto max-h-40 min-h-40 justify-center",
+      },
       m.todos.map((todo, idx) => {
         console.log(todo);
         return li({ className: "flex items-center justify-between py-2" }, [

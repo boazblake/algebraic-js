@@ -28,8 +28,5 @@
     "prettier": "^3.6.2",
     "oxlint": "^1.16.0",
     "typescript": "^5.4.0"
-  },
-  "optionalDependencies": {
-    "@nativescript/core": "^8.6.0"
   }
 }
