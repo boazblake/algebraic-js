@@ -40,7 +40,7 @@ export const renderApp = (renderer) => (rootIO, program) => rootIO
     };
     return IO(() => {
         start();
-        return { dispatch };
+        return { dispatch, getModel: () => model };
     });
 })
     .chain((io) => io);

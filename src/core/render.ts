@@ -55,7 +55,7 @@ export const renderApp =
 
         return IO(() => {
           start();
-          return { dispatch };
+          return { dispatch, getModel: () => model };
         });
       })
       .chain((io) => io);
