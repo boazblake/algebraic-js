@@ -7,6 +7,9 @@ export type DomEnv = {
     sessionStorage: Storage;
     fetch: typeof fetch;
 };
+export type NetEnv = DomEnv & {
+    ws: WebSocket;
+};
 export declare const askEnv: Reader<DomEnv, DomEnv>;
 export declare const askDocument: Reader<DomEnv, Document>;
 export declare const askWindow: Reader<DomEnv, Window>;

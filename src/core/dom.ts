@@ -9,6 +9,8 @@ export type DomEnv = {
   fetch: typeof fetch;
 };
 
+export type NetEnv = DomEnv & { ws: WebSocket };
+
 export const askEnv = Reader<DomEnv, DomEnv>((env) => env);
 export const askDocument = askEnv.map((e) => e.document);
 export const askWindow = askEnv.map((e) => e.window);

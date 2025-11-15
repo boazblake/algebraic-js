@@ -1,25 +1,38 @@
 import type { Program, EffectLike } from "./types.js";
 import { IO } from "../adt/io.js";
+import { browserEnv,type NetEnv } from "../core/dom.js";
 
 export type Renderer = (root: Element, vnode: any) => void;
 
+/**
+ * renderApp
+ * Executes both IO and Reader<NetEnv, IO> effects.
+ * The `env` includes the DOM environment and, when provided,
+ * a WebSocket or anything else you add to NetEnv.
+ */
 export const renderApp =
-  (renderer: Renderer) =>
+  (renderer: Renderer, env: NetEnv = browserEnv() as NetEnv) =>
   <M, Msg>(
     rootIO: IO<Element>,
     program: Program<M, Msg>
-  ): IO<{ dispatch: (msg: Msg) => void }> =>
+  ): IO<{ dispatch: (msg: Msg) => void; getModel: () => M }> =>
     rootIO
       .map((root) => {
         let model!: M;
         const queue: Msg[] = [];
         let queued = false;
 
-        //This is needs more work as currently it will only run ADTs with a run method that requires no args
-        const runEffects = (fx?: EffectLike[]) => {
-          return fx?.forEach((e) => {
-            if (e.run && typeof e.run === "function") {
+        /** Executes IO and Reader<NetEnv, IO> effects */
+        const runEffects = (fx?: any[]) => {
+          fx?.forEach((e) => {
+            // Plain IO
+            if (e && typeof e.run === "function" && !("map" in e)) {
               e.run();
+            }
+            // Reader<NetEnv, IO>
+            else if (e && typeof e.run === "function" && "map" in e) {
+              const io = e.run(env);
+              if (io && typeof io.run === "function") io.run();
             }
           });
         };
