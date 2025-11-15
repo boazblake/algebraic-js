@@ -1,28 +1,26 @@
-import { IO } from "../adt/io.js";
-import { browserEnv } from "../core/dom.js";
-/**
- * renderApp
- * Executes both IO and Reader<NetEnv, IO> effects.
- * The `env` includes the DOM environment and, when provided,
- * a WebSocket or anything else you add to NetEnv.
- */
+import { IO } from '../adt/io.js';
+import { browserEnv } from '../core/dom.js';
 export const renderApp = (renderer, env = browserEnv()) => (rootIO, program) => rootIO
-    .map((root) => {
+    .map(root => {
     let model;
     const queue = [];
     let queued = false;
-    /** Executes IO and Reader<NetEnv, IO> effects */
+    // Executes both IO and Reader effects
     const runEffects = (fx) => {
-        fx?.forEach((e) => {
-            // Plain IO
-            if (e && typeof e.run === "function" && !("map" in e)) {
+        fx?.forEach(e => {
+            if (!e)
+                return;
+            // plain IO
+            if (typeof e.run === 'function' && !('map' in e)) {
                 e.run();
+                return;
             }
-            // Reader<NetEnv, IO>
-            else if (e && typeof e.run === "function" && "map" in e) {
-                const io = e.run(env);
-                if (io && typeof io.run === "function")
+            // Reader<DomEnv, IO>  (our Reader-based sendMsg)
+            if (typeof e.run === 'function' && 'map' in e) {
+                const io = e.run(env); // supply the environment
+                if (io && typeof io.run === 'function')
                     io.run();
+                return;
             }
         });
     };
@@ -57,4 +55,4 @@ export const renderApp = (renderer, env = browserEnv()) => (rootIO, program) => 
         return { dispatch, getModel: () => model };
     });
 })
-    .chain((io) => io);
+    .chain(io => io);
